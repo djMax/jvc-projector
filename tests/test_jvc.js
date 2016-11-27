@@ -17,14 +17,14 @@ tap.test('connect', (t) => {
   jvc = new JVC(console, process.env.JVC_IP || 'theater-projector');
   jvc.connect();
 
-  jvc.on('connected', () => {
+  jvc.once('connected', () => {
     t.ok(true, 'Should connect to projector');
     t.end();
   });
 });
 
 tap.test('ready', (t) => {
-  jvc.on('ready', () => {
+  jvc.once('ready', () => {
     t.ok(true, 'Should get to ready state');
     t.end();
   });
