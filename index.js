@@ -14,11 +14,17 @@ export default class JVC extends EventEmitter {
       return;
     }
     if (!this.acked) {
-      if (d.toString('utf8') === 'PJ_OK') {
+      const str = d.toString('utf8');
+      if (str.startsWith('PJ_OK')) {
         this.socket.write(Buffer.from('PJREQ'));
-      } else if (d.toString('utf8') === 'PJACK') {
+      } else if (str.startsWith('PJACK')) {
         this.acked = true;
         this.emit('ready');
+      } else if (str.startsWith('PJNAK')) {
+        this.logger.info('Received NAK');
+      }
+      if (d.length > 5) {
+        this.received(d.slice(5));
       }
     } else {
       const fullMessage = this.partial ? Buffer.concat([this.partial, d]) : d;
